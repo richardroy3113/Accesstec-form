@@ -90,6 +90,7 @@
   }
   .yn-btn.active-yes{background:var(--green); border-color:var(--green); color:#fff;}
   .yn-btn.active-no{background:var(--red); border-color:var(--red); color:#fff;}
+  .yn-btn.active-choice{background:var(--navy); border-color:var(--navy); color:#fff;}
 
   .conditional{
     margin-top:10px; padding:12px; background:#f3f7fa; border-radius:8px; border:1px dashed var(--border);
@@ -214,6 +215,8 @@
     <div class="yn-group" data-yn="intelliboardDataDrop"></div>
     <label>Was the Intelliboard configured?</label>
     <div class="yn-group" data-yn="intelliboardConfigured"></div>
+    <label>Where was the Intelliboard PC left?</label>
+    <input type="text" id="intelliboardPcLocation" placeholder="e.g. mounted behind TV, in rack, on-site storage room">
     <label>Intelliboard Notes / Issues</label>
     <textarea id="intelliboardNotes"></textarea>
   </div>
@@ -225,6 +228,8 @@
     <div class="yn-group" data-yn="escreenPowered"></div>
     <label>Does the eScreen have a data drop?</label>
     <div class="yn-group" data-yn="escreenDataDrop"></div>
+    <label>Is the eScreen currently connected to Wi-Fi or LAN?</label>
+    <div class="yn-group" data-choice="escreenConnection" data-options="Wi-Fi,LAN,Neither"></div>
     <label>eScreen Notes / Issues</label>
     <textarea id="escreenNotes"></textarea>
   </div>
@@ -319,7 +324,7 @@
 <script>
 // ====== CONFIGURATION ======
 // Paste your deployed Google Apps Script Web App URL below.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVh335mC3qFDT141gkvv3zpW66cyfjtwLEfLTOgLcNiYvWML8o9dtE2gK6FFlTRiLj/exec";
+const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 // ============================
 
 const state = {
@@ -330,7 +335,7 @@ const state = {
 let itemIdCounter = 0;
 
 // ---- Yes/No button groups ----
-document.querySelectorAll('.yn-group').forEach(group => {
+document.querySelectorAll('.yn-group[data-yn]').forEach(group => {
   const key = group.dataset.yn;
   ['Yes','No'].forEach(val => {
     const btn = document.createElement('button');
@@ -342,6 +347,24 @@ document.querySelectorAll('.yn-group').forEach(group => {
       group.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-yes','active-no'));
       btn.classList.add(val === 'Yes' ? 'active-yes' : 'active-no');
       handleConditional(key, val);
+    });
+    group.appendChild(btn);
+  });
+});
+
+// ---- Generic multi-option choice groups (e.g. Wi-Fi / LAN / Neither) ----
+document.querySelectorAll('.yn-group[data-choice]').forEach(group => {
+  const key = group.dataset.choice;
+  const options = group.dataset.options.split(',');
+  options.forEach(val => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'yn-btn';
+    btn.textContent = val;
+    btn.addEventListener('click', () => {
+      state.yn[key] = val;
+      group.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-choice'));
+      btn.classList.add('active-choice');
     });
     group.appendChild(btn);
   });
@@ -536,9 +559,11 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     intelliboardOutlet: state.yn.intelliboardOutlet || '',
     intelliboardDataDrop: state.yn.intelliboardDataDrop || '',
     intelliboardConfigured: state.yn.intelliboardConfigured || '',
+    intelliboardPcLocation: document.getElementById('intelliboardPcLocation').value,
     intelliboardNotes: document.getElementById('intelliboardNotes').value,
     escreenPowered: state.yn.escreenPowered || '',
     escreenDataDrop: state.yn.escreenDataDrop || '',
+    escreenConnection: state.yn.escreenConnection || '',
     escreenNotes: document.getElementById('escreenNotes').value,
     additionalDropsNeeded: state.yn.additionalDropsNeeded || '',
     additionalDropsDetail: document.getElementById('additionalDropsDetail').value,

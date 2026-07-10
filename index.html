@@ -112,6 +112,16 @@
   .item-fields{display:grid; grid-template-columns:1fr 1fr 70px; gap:8px;}
   .item-fields input{padding:9px 8px; font-size:14px;}
 
+  .example-row{
+    border:1.5px dashed var(--border); border-radius:8px; padding:10px 12px; margin-top:12px;
+    background:#f1f3f5; display:flex; align-items:center; gap:8px;
+  }
+  .example-row .tag{
+    font-size:10px; font-weight:800; color:#8a95a0; text-transform:uppercase; letter-spacing:.5px;
+    background:#e2e6e9; padding:3px 7px; border-radius:5px; flex-shrink:0;
+  }
+  .example-row .example-text{font-size:14px; color:#7c8790; font-style:italic;}
+
   .add-btn{
     width:100%; margin-top:12px; padding:12px; border-radius:8px; border:1.5px dashed var(--cyan-dark);
     background:#eaf7fc; color:var(--cyan-dark); font-weight:700; font-size:14px; cursor:pointer;
@@ -265,6 +275,7 @@
   <div class="card" data-section="8">
     <div class="section-head"><div class="section-num">8</div><div class="section-title">New Surplus Gear Inventory</div></div>
     <p class="hint">List all new/surplus equipment remaining at the site.</p>
+    <div class="example-row"><span class="tag">Example</span><span class="example-text">HP — 24" Monitor — Qty 18</span></div>
     <div id="surplusItems"></div>
     <button type="button" class="add-btn" data-add="surplus">+ Add item</button>
     <div class="photo-input-wrap" data-photo="surplusPhotos"></div>
@@ -276,6 +287,7 @@
   <div class="card" data-section="9">
     <div class="section-head"><div class="section-num">9</div><div class="section-title">Legacy Gear Inventory</div></div>
     <p class="hint">List all legacy/existing equipment found at the site, including exact locations. Include location context in each photo.</p>
+    <div class="example-row"><span class="tag">Example</span><span class="example-text">HP — 24" Monitor — Qty 18</span></div>
     <div id="legacyItems"></div>
     <button type="button" class="add-btn" data-add="legacy">+ Add item</button>
     <div class="photo-input-wrap" data-photo="legacyPhotos"></div>
@@ -409,7 +421,6 @@ document.querySelectorAll('[data-photo]').forEach(wrap => {
   input.type = 'file';
   input.accept = 'image/*';
   input.multiple = true;
-  input.capture = 'environment';
   input.style.display = 'none';
   const thumbs = document.createElement('div');
   thumbs.className = 'thumbs';
